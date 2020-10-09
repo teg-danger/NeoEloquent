@@ -1,5 +1,6 @@
 <?php namespace Vinelab\NeoEloquent\Eloquent\Relations;
 
+use Illuminate\Support\Str;
 use Vinelab\NeoEloquent\Eloquent\Model;
 use Vinelab\NeoEloquent\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -240,17 +241,16 @@ abstract class HasOneOrMany extends IlluminateHasOneOrMany implements RelationIn
     /**
      * Create an array of new instances of the related model.
      *
-     * @param  array  $records
-     * @param  array   $properties The relationship properites
-     * @return array
+     * @param array $records
+     * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function createMany(array $records, array $properties = array())
+    public function createMany(iterable $records)
     {
         $instances = new Collection;
 
         foreach ($records as $record)
         {
-            $instances->push($this->create($record, $properties));
+            $instances->push($this->create($record, $properties=array()));
         }
 
         return $instances;
@@ -486,7 +486,7 @@ abstract class HasOneOrMany extends IlluminateHasOneOrMany implements RelationIn
         {
             if ( ! is_array($attributes))
             {
-                list($id, $attributes) = array($attributes, array());
+                [$id, $attributes] = array($attributes, array());
             }
 
             $results[$id] = $attributes;
@@ -524,7 +524,7 @@ abstract class HasOneOrMany extends IlluminateHasOneOrMany implements RelationIn
      */
     protected function guessInverseRelation()
     {
-        return camel_case(str_plural(class_basename($this->getParent())));
+        return Str::camel(Str::plural(class_basename($this->getParent())));
     }
 
     /**

@@ -8,7 +8,7 @@ use Vinelab\NeoEloquent\Query\Grammars\CypherGrammar;
 
 class EloquentBuilderTest extends TestCase {
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -19,7 +19,7 @@ class EloquentBuilderTest extends TestCase {
         $this->builder = new Builder($this->query);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         M::close();
 
@@ -161,7 +161,7 @@ class EloquentBuilderTest extends TestCase {
         $callbackExecutionAssertor->shouldReceive('doSomething')->with('foo1')->once();
         $callbackExecutionAssertor->shouldReceive('doSomething')->with('foo2')->once();
         $callbackExecutionAssertor->shouldReceive('doSomething')->with('foo3')->once();
-        $builder->setModel($this->getMockModel());        
+        $builder->setModel($this->getMockModel());
         $builder->chunk(2, function ($results) use ($callbackExecutionAssertor) {
             foreach ($results as $result) {
                 $callbackExecutionAssertor->doSomething($result);
@@ -217,8 +217,10 @@ class EloquentBuilderTest extends TestCase {
     public function testGetRelationProperlySetsNestedRelationships()
     {
         $builder = $this->getBuilder();
-        $builder->setModel($this->getMockModel());
-        $builder->getModel()->shouldReceive('orders')->once()->andReturn($relation = m::mock('stdClass'));
+        $model = $this->getMockModel();
+        $builder->setModel($model);
+        $model->shouldReceive('orders')->once()->andReturn($relation = m::mock('stdClass'));
+        $model->shouldReceive('newInstance')->once()->andReturn($model);
         $relationQuery = m::mock('stdClass');
         $relation->shouldReceive('getQuery')->andReturn($relationQuery);
         $relationQuery->shouldReceive('with')->once()->with(array('lines' => null, 'lines.details' => null));
@@ -233,7 +235,7 @@ class EloquentBuilderTest extends TestCase {
         $builder->setModel($this->getMockModel());
         $builder->getModel()->shouldReceive('orders')->once()->andReturn($relation = m::mock('stdClass'));
         $builder->getModel()->shouldReceive('ordersGroups')->once()->andReturn($groupsRelation = m::mock('stdClass'));
-
+        $builder->getModel()->shouldReceive('newInstance')->times(2)->andReturn( $builder->getModel());
         $relationQuery = m::mock('stdClass');
         $relation->shouldReceive('getQuery')->andReturn($relationQuery);
 

@@ -18,6 +18,10 @@ use Illuminate\Pagination\Paginator;
 class Builder extends IlluminateBuilder {
 
     use Concerns\QueriesRelationships;
+    public function __construct(\Vinelab\NeoEloquent\Query\Builder $query)
+    {
+        $this->query = $query;
+    }
 
     /**
      * The loaded models that should be transformed back

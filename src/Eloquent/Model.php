@@ -1,5 +1,6 @@
 <?php namespace Vinelab\NeoEloquent\Eloquent;
 
+use Illuminate\Support\Str;
 use Vinelab\NeoEloquent\Helpers;
 use Illuminate\Database\Eloquent\Collection;
 use Vinelab\NeoEloquent\Eloquent\Relations\HasOne;
@@ -13,10 +14,35 @@ use Vinelab\NeoEloquent\Query\Builder as QueryBuilder;
 use Vinelab\NeoEloquent\Eloquent\Relations\MorphedByOne;
 use Vinelab\NeoEloquent\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
-use Vinelab\NeoEloquent\Eloquent\Builder as EloquentBuilder;
+//use Vinelab\NeoEloquent\Eloquent\Builder as EloquentBuilder;
 
 abstract class Model extends IlluminateModel {
 
+    /**
+     * Handle dynamic method calls into the model.
+     *
+     * @param  string  $method
+     * @param  array  $parameters
+     * @return mixed
+     */
+    public function __call($method, $parameters)
+    {
+        if (in_array($method, ['increment', 'decrement'])) {
+            return $this->$method(...$parameters);
+        }
+
+        return $this->forwardCallTo($this->newQuery(), $method, $parameters);
+    }
+    /**
+     * Get a new query builder for the model's table.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function newQuery()
+    {
+
+        return $this->registerGlobalScopes($this->newQueryWithoutScopes());
+    }
     /**
      * The node label
      *
@@ -55,7 +81,7 @@ abstract class Model extends IlluminateModel {
      */
     public function newEloquentBuilder($query)
     {
-        return new EloquentBuilder($query);
+        return new Builder($query);
     }
 
     /**
@@ -148,7 +174,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -189,7 +215,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -230,7 +256,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -272,7 +298,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -317,7 +343,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -369,7 +395,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -412,7 +438,7 @@ abstract class Model extends IlluminateModel {
         // of the time this will be what we desire to use for the relationships.
         if (is_null($relation))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
             $relation = $caller['function'];
         }
@@ -457,7 +483,7 @@ abstract class Model extends IlluminateModel {
         if ($name && $type)
         {
             // Determine the relation function name out of the back trace
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
             $relation = $caller['function'];
             return $this->morphedByOne($name, $type, $id, $relation);
         }
@@ -467,12 +493,12 @@ abstract class Model extends IlluminateModel {
         // use that to get both the class and foreign key that will be utilized.
         if (is_null($name))
         {
-            list(, $caller) = debug_backtrace(false);
+            [, $caller] = debug_backtrace(false);
 
-            $name = snake_case($caller['function']);
+            $name = Str::snake($caller['function']);
         }
 
-        list($type, $id) = $this->getMorphs($name, $type, $id);
+        [$type, $id] = $this->getMorphs($name, $type, $id);
 
         // If the type value is null it is probably safe to assume we're eager loading
         // the relationship. When that is the case we will pass in a dummy query as
@@ -719,4 +745,17 @@ abstract class Model extends IlluminateModel {
             return false;
         }
     }
+
+    public function __get($key)
+    {
+
+        return $this->getAttribute($key);
+    }
+
+   /* public function newModelQuery()
+    {
+        return $this->newEloquentBuilder(
+            $this->newBaseQueryBuilder()
+        )->setModel($this);
+    }*/
 }

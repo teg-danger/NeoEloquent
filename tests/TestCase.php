@@ -19,7 +19,7 @@ class TestCase extends PHPUnit {
         $this->dbConfig = require 'config/database.php';
     }
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 
@@ -29,7 +29,7 @@ class TestCase extends PHPUnit {
         Stub::setConnectionResolver($resolver);
     }
 
-    public function tearDown()
+    public function tearDown() : void
     {
         // everything should be clean before every test
         $this->flushDb();
@@ -50,7 +50,8 @@ class TestCase extends PHPUnit {
      */
     protected function getConnectionWithConfig($config = null)
     {
-        $connection = is_null($config) ? $this->dbConfig['connections']['default'] :
+        $defaultConfig = "neo4j";
+        $connection = is_null($config) || $config ==='default' ? $this->dbConfig['connections'][$defaultConfig] :
                                          $this->dbConfig['connections'][$config];
 
         return new Connection($connection);

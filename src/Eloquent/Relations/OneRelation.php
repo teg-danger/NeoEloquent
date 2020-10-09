@@ -87,7 +87,7 @@ abstract class OneRelation extends BelongsTo implements RelationInterface {
          */
 
         // Set the relation on the model
-        $this->parent->setRelation($this->relation, $model);
+        $this->parent->setRelation($this->relationName, $model);
 
         /**
          * Due to the fact that relationships in Graph are entities themselves
@@ -204,7 +204,7 @@ abstract class OneRelation extends BelongsTo implements RelationInterface {
 
     public function getRelationName()
     {
-        return $this->relation;
+        return $this->relationName;
     }
 
     public function getRelationType()
@@ -232,4 +232,8 @@ abstract class OneRelation extends BelongsTo implements RelationInterface {
         return $this->parent->{$this->ownerKey};
     }
 
+    public function getResults()
+    {
+        return $this->query->first() ?: $this->getDefaultFor($this->parent);
+    }
 }

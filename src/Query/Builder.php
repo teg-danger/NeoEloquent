@@ -95,7 +95,7 @@ class Builder extends IlluminateQueryBuilder {
 	 * @param  string  $label
 	 * @return \Vinelab\NeoEloquent\Query\Builder|static
 	 */
-    public function from($label)
+    public function from($label, $a=NULL)
     {
         $this->from = $label;
 
@@ -934,5 +934,30 @@ class Builder extends IlluminateQueryBuilder {
         $this->columns = $original;
 
         return $results;
+    }
+
+    protected function addUpdatedAtColumn(array $values)
+    {
+        if (! $this->model->usesTimestamps() ||
+            is_null($this->model->getUpdatedAtColumn())) {
+            return $values;
+        }
+
+        $column = $this->model->getUpdatedAtColumn();
+
+        $values = array_merge(
+            [$column => $this->model->freshTimestampString()],
+            $values
+        );
+
+        $from = is_array($this->query->from) ? $this->query->from[0] : $this->query->from;
+        $segments = preg_split('/\s+as\s+/i', $from);
+        $qualifiedColumn = end($segments).'.'.$column;
+
+        $values[$qualifiedColumn] = $values[$column];
+
+        unset($values[$column]);
+
+        return $values;
     }
 }
