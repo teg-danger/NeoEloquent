@@ -1,14 +1,14 @@
 language: php
 
 php:
-  - 7.1
+  - 7.2
 
 services:
   - neo4j
 
 matrix:
   allow_failures:
-    - env: NEO4J_VERSION="2.3"
+    - env: NEO4J_VERSION="3.5"
 
 before_script:
   # install dependencies to add repos
@@ -36,6 +36,8 @@ env:
       - NEO4J_VERSION="3.1"
       - NEO4J_VERSION="3.2"
       - NEO4J_VERSION="3.3"
+      - NEO4J_VERSION="3.4"
+      - NEO4J_VERSION="3.5"
 
 notifications:
   slack:
