@@ -3,10 +3,9 @@
 [![Build Status](https://travis-ci.org/Vinelab/NeoEloquent.svg?branch=master)](https://travis-ci.org/Vinelab/NeoEloquent)
 
 # NeoEloquent
-Neo4j Graph Eloquent Driver for Laravel
+Neo4j Graph Eloquent Driver for Laravel, This package is a fork of the original package  `vinelab/neoeloquent`. 
+Since the package is outdated, we decided to fork to do some update.
 
-## Chat & Support
-Join the [Official Neo4j Slack Group](https://neo4j.com/blog/public-neo4j-users-slack-group/) and use the #neo4j-php channel.
 
 ## Quick Reference
 
@@ -24,6 +23,17 @@ Join the [Official Neo4j Slack Group](https://neo4j.com/blog/public-neo4j-users-
 ## Installation
 
 Add the package to your `composer.json` and run `composer update`.
+
+### laravel 6.*
+We started the migration to laravel 6 but all the tests are not verify (there are still 15/263 failed test) so it in test mode, but if you want to install (at your on risk)
+Please add 
+```json
+{
+    "require": {
+        "gohze/neoeloquent": "dev-1.5.x-dev"
+    }
+}
+```
 
 ### Laravel 5
 
