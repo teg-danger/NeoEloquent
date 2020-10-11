@@ -673,6 +673,7 @@ abstract class Model extends IlluminateModel {
      */
     public function getDirty()
     {
+
         $dirty = parent::getDirty();
 
         // We need to remove the primary key from the dirty attributes since primary keys
@@ -752,10 +753,5 @@ abstract class Model extends IlluminateModel {
         return $this->getAttribute($key);
     }
 
-   /* public function newModelQuery()
-    {
-        return $this->newEloquentBuilder(
-            $this->newBaseQueryBuilder()
-        )->setModel($this);
-    }*/
+
 }

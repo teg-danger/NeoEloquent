@@ -323,6 +323,7 @@ abstract class HasOneOrMany extends IlluminateHasOneOrMany implements RelationIn
             $models = $id->all();
         } elseif ( ! $this->isArrayOfModels($id))
         {
+
             $models = $this->modelsFromIds($id);
             // In case someone is messing with us and passed a bunch of ids (or single id)
             // that do not exist we slap them in the face with a ModelNotFoundException.
@@ -537,6 +538,7 @@ abstract class HasOneOrMany extends IlluminateHasOneOrMany implements RelationIn
     {
         // We need a Model in order to save this relationship so we try
         // to whereIn the given id(s) through the related model.
+
         return $this->related->whereIn($this->related->getKeyName(), (array) $ids)->get();
     }
 

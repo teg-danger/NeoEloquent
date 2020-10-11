@@ -16,14 +16,14 @@ class Builder extends IlluminateQueryBuilder {
     /**
      * The database connection instance
      *
-     * @var Vinelab\NeoEloquent\Connection
+     * @var \Vinelab\NeoEloquent\Connection
      */
     public $connection;
 
     /**
      * The database active client handler
      *
-     * @var Everyman\Neo4j\Client
+     * @var \Everyman\Neo4j\Client
      */
     protected $client;
 
@@ -73,10 +73,9 @@ class Builder extends IlluminateQueryBuilder {
     /**
      * Create a new query builder instance.
      *
-     * @param Vinelab\NeoEloquent\Connection $connection
-     * @param  \Illuminate\Database\Query\Grammars\Grammar  $grammar
-     * @param  \Illuminate\Database\Query\Processors\Processor  $processor
-     * @return void
+     * @param \Vinelab\NeoEloquent\Connection $connection
+     * @param \Vinelab\NeoEloquent\Query\Grammars\Grammar $grammar
+     * @param \Illuminate\Database\Query\Processors\Processor $processor
      */
     public function __construct(Connection $connection, Grammar $grammar, IlluminateProcessor $processor)
     {
@@ -287,7 +286,7 @@ class Builder extends IlluminateQueryBuilder {
 
 		if (func_num_args() == 2)
 		{
-			list($value, $operator) = array($operator, '=');
+			[$value, $operator] = array($operator, '=');
 		}
 		elseif ($this->invalidOperatorAndValue($operator, $value))
 		{
@@ -307,7 +306,7 @@ class Builder extends IlluminateQueryBuilder {
 		// we will set the operators to '=' and set the values appropriately.
 		if ( ! in_array(mb_strtolower($operator), $this->operators, true))
 		{
-			list($value, $operator) = array($operator, '=');
+			[$value, $operator] = array($operator, '=');
 		}
 
 		// If the value is a Closure, it means the developer is performing an entire
@@ -936,28 +935,5 @@ class Builder extends IlluminateQueryBuilder {
         return $results;
     }
 
-    protected function addUpdatedAtColumn(array $values)
-    {
-        if (! $this->model->usesTimestamps() ||
-            is_null($this->model->getUpdatedAtColumn())) {
-            return $values;
-        }
 
-        $column = $this->model->getUpdatedAtColumn();
-
-        $values = array_merge(
-            [$column => $this->model->freshTimestampString()],
-            $values
-        );
-
-        $from = is_array($this->query->from) ? $this->query->from[0] : $this->query->from;
-        $segments = preg_split('/\s+as\s+/i', $from);
-        $qualifiedColumn = end($segments).'.'.$column;
-
-        $values[$qualifiedColumn] = $values[$column];
-
-        unset($values[$column]);
-
-        return $values;
-    }
 }

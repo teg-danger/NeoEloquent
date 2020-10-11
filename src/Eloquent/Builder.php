@@ -1,16 +1,11 @@
 <?php namespace Vinelab\NeoEloquent\Eloquent;
 
-use Closure;
 use Everyman\Neo4j\Node;
 use Everyman\Neo4j\Query\Row;
 use Vinelab\NeoEloquent\Helpers;
 use Everyman\Neo4j\Query\ResultSet;
-use Vinelab\NeoEloquent\Eloquent\Model;
 use Vinelab\NeoEloquent\QueryException;
-use Vinelab\NeoEloquent\Eloquent\Relations\HasOne;
-use Vinelab\NeoEloquent\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Collection;
-use Vinelab\NeoEloquent\Eloquent\Relations\OneRelation;
 use Illuminate\Database\Eloquent\Builder as IlluminateBuilder;
 use Illuminate\Pagination\Paginator;
 
@@ -825,5 +820,29 @@ class Builder extends IlluminateBuilder {
     protected function getMatchMethodName($relation)
     {
         return 'match'. ucfirst(mb_strtolower($relation->getEdgeDirection()));
+    }
+    protected function addUpdatedAtColumn(array $values)
+    {
+        if (! $this->model->usesTimestamps() ||
+            is_null($this->model->getUpdatedAtColumn())) {
+            return $values;
+        }
+
+        $column = $this->model->getUpdatedAtColumn();
+
+        $values = array_merge(
+            [$column => $this->model->freshTimestampString()],
+            $values
+        );
+
+       /* $from = is_array($this->query->from)? $this->query->from[0]: $this->query->from;
+        $segments = preg_split('/\s+as\s+/i', $from);
+        $qualifiedColumn = mb_strtolower(end($segments)).'.'.$column;
+
+        $values[$qualifiedColumn] = $values[$column];
+
+        unset($values[$column]);*/
+
+        return $values;
     }
 }
