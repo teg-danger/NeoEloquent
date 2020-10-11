@@ -88,7 +88,8 @@ class EloquentBuilderTest extends TestCase {
         $builder = m::mock('Vinelab\NeoEloquent\Eloquent\Builder[get,take]', array($this->getMockQueryBuilder()));
         $builder->shouldReceive('take')->with(1)->andReturn($builder);
         $builder->shouldReceive('get')->with(array('*'))->andReturn(new Collection(array('bar')));
-
+        $builder->shouldReceive('orderBy')->once()->andReturn($builder);
+       // $builder->shouldReceive('hasNamedScope')->once()->andReturn($builder);
         $result = $builder->first();
         $this->assertEquals('bar', $result);
     }
@@ -361,6 +362,7 @@ class EloquentBuilderTest extends TestCase {
         $this->query->shouldReceive('from')->once()->with('Model')->andReturn(array('Model'));
         $this->query->shouldReceive('take')->once()->with(1)->andReturn($this->query);
         $this->query->shouldReceive('get')->once()->with(array('*'))->andReturn($resultSet);
+        $this->query->shouldReceive('orderBy')->once()->andReturn($this->query);
 
         $resultSet->shouldReceive('valid')->once()->andReturn(false);
 
@@ -370,6 +372,8 @@ class EloquentBuilderTest extends TestCase {
 
         $collection = new \Illuminate\Support\Collection(array(M::mock('Everyman\Neo4j\Query\ResultSet')));
         $this->model->shouldReceive('newCollection')->once()->andReturn($collection);
+        $this->model->shouldReceive('hasNamedScope')->once()->andReturn($this->model);
+        $this->model->shouldReceive('callNamedScope')->once()->andReturn($this->model);
 
         $this->builder->setModel($this->model);
 
@@ -399,6 +403,8 @@ class EloquentBuilderTest extends TestCase {
         // usual query expectations
         $this->query->shouldReceive('where')->once()->with('id(n)', '=', $id)
                     ->shouldReceive('take')->once()->with(1)->andReturn($this->query)
+                    ->shouldReceive('orderBy')->once()->andReturn($this->query)
+                   // ->shouldReceive('hasNamedScope')->once()->andReturn($this->query)
                     ->shouldReceive('get')->once()->with($properties)->andReturn($resultSet)
                     ->shouldReceive('from')->once()->with('Model')
                         ->andReturn(array('Model'));
@@ -417,6 +423,8 @@ class EloquentBuilderTest extends TestCase {
                     ->shouldReceive('getKeyName')->twice()->andReturn('id')
                     ->shouldReceive('getTable')->once()->andReturn('Model')
                     ->shouldReceive('getConnectionName')->once()->andReturn('default')
+                    ->shouldReceive('hasNamedScope')->once()->andReturn($this->model)
+                    ->shouldReceive('callNamedScope')->once()->andReturn($this->model)
                     ->shouldReceive('newFromBuilder')->once()->with($attributes)->andReturn($user);
 
         // assign the builder's $model to our mock
@@ -424,6 +432,7 @@ class EloquentBuilderTest extends TestCase {
         $grammar = M::mock('Vinelab\NeoEloquent\Query\Grammars\CypherGrammar')->makePartial();
         $this->query->shouldReceive('getGrammar')->andReturn($grammar);
         // put things to the test
+
         $found = $this->builder->find($id, $properties);
 
         $this->assertInstanceOf('User', $found);
