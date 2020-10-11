@@ -1,5 +1,6 @@
 <?php namespace Vinelab\NeoEloquent;
 
+use Everyman\Neo4j\Client;
 use Vinelab\NeoEloquent\Eloquent\Model;
 use Illuminate\Support\ServiceProvider;
 use Vinelab\NeoEloquent\Schema\Grammars\CypherGrammar;
@@ -32,6 +33,8 @@ class NeoEloquentServiceProvider extends ServiceProvider {
         Model::setConnectionResolver($this->app['db']);
 
         Model::setEventDispatcher($this->app['events']);
+
+
     }
 
     /**
@@ -55,7 +58,12 @@ class NeoEloquentServiceProvider extends ServiceProvider {
                 $loader->alias('Neo4jSchema', 'Vinelab\NeoEloquent\Facade\Neo4jSchema');
             }
         });
-
+        $this->app->bind(Client::class,function($app){
+            $config = $app['config']->get('database.connections.neo4j');
+            $conn = new Connection($config);
+            $conn->setSchemaGrammar(new CypherGrammar);
+            return $conn->getClient();
+        });
 
         $this->registerComponents();
     }
