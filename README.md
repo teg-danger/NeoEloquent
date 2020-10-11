@@ -23,7 +23,15 @@ Since the package is outdated, we decided to fork to do some update.
 ## Installation
 
 Add the package to your `composer.json` and run `composer update`.
-
+### laravel 7.*
+ `composer.json`
+```json
+{
+    "require": {
+        "gohze/neoeloquent": "^1.5"
+    }
+}
+```
 ### laravel 6.*
  `composer.json`
 ```json
