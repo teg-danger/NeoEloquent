@@ -25,12 +25,11 @@ Since the package is outdated, we decided to fork to do some update.
 Add the package to your `composer.json` and run `composer update`.
 
 ### laravel 6.*
-We started the migration to laravel 6 but all the tests are not verify (there are still 15/263 failed test) so it in test mode, but if you want to install (at your on risk)
-Please add this on your `composer.json`
+ `composer.json`
 ```json
 {
     "require": {
-        "gohze/neoeloquent": "dev-1.5.x-dev"
+        "gohze/neoeloquent": "^1.5"
     }
 }
 ```
