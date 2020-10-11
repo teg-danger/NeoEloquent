@@ -1,6 +1,6 @@
 <?php namespace Vinelab\NeoEloquent\Migrations;
 
-abstract class Migration {
+abstract class Migration extends \Illuminate\Database\Migrations\Migration{
 
     /**
      * The name of the database connection to use.
