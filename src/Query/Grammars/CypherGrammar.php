@@ -260,7 +260,7 @@ class CypherGrammar extends Grammar {
         return sprintf("MATCH (%s)", $labels);
     }
 
-    
+
     /**
      * Compile a "where not in" clause.
      *
@@ -285,7 +285,7 @@ class CypherGrammar extends Grammar {
      * @param  \Vinelab\NeoEloquent\Query\Builder  $query
      * @return string
      */
-    protected function compileWheres(Builder $query)
+    public function compileWheres(Builder $query)
     {
         $cypher = array();
 
@@ -476,7 +476,7 @@ class CypherGrammar extends Grammar {
 
         $where = is_array($query->wheres) ? $this->compileWheres($query) : '';
 
-       
+
         return "$match $where OPTIONAL $match-[r]-()  $where DELETE  " . $query->modelAsNode().",r";
 
     }
