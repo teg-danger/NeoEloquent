@@ -15,7 +15,7 @@ use Vinelab\NeoEloquent\Console\Migrations\MigrateRollbackCommand;
 class MigrationServiceProvider extends ServiceProvider {
 
     /**
-     * {@inheritDoc}
+     * {}
      */
     protected $defer = true;
 
@@ -130,9 +130,9 @@ class MigrationServiceProvider extends ServiceProvider {
     {
         $this->app->singleton('command.neoeloquent.migrate', function($app) {
 
-            $packagePath = $app->basePath().'/vendor';
+            //$packagePath = $app->basePath().'/vendor';
 
-            return new MigrateCommand($app['neoeloquent.migrator'], $packagePath);
+            return new MigrateCommand($app['neoeloquent.migrator']);
         });
     }
 
@@ -183,7 +183,7 @@ class MigrationServiceProvider extends ServiceProvider {
     protected function registerMigrateMakeCommand()
     {
         $this->app->singleton('migration.neoeloquent.creator', function($app) {
-            return new MigrationCreator($app['files']);
+            return new MigrationCreator($app['files'], __DIR__ . '/stubs');
         });
 
         $this->app->singleton('command.neoeloquent.migrate.make', function($app) {
@@ -192,11 +192,11 @@ class MigrationServiceProvider extends ServiceProvider {
             // creation of the migrations, and may be extended by these developers.
             $creator = $app['migration.neoeloquent.creator'];
 
-            $packagePath = $app->basePath().'/vendor';
+            //$packagePath = $app->basePath().'/vendor';
 
             $composer = $app->make('Illuminate\Support\Composer');
 
-            return new MigrateMakeCommand($creator, $composer, $packagePath);
+            return new MigrateMakeCommand($creator, $composer);
         });
     }
 

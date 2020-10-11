@@ -231,4 +231,9 @@ class DatabaseMigrationRepository implements MigrationRepositoryInterface {
             ->get()
             ->pluck('batch', 'migration')->all();
     }
+
+    public function deleteRepository()
+    {
+        // TODO: Implement deleteRepository() method.
+    }
 }
