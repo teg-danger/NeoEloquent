@@ -88,7 +88,7 @@ class EloquentBuilderTest extends TestCase {
         $builder = m::mock('Vinelab\NeoEloquent\Eloquent\Builder[get,take]', array($this->getMockQueryBuilder()));
         $builder->shouldReceive('take')->with(1)->andReturn($builder);
         $builder->shouldReceive('get')->with(array('*'))->andReturn(new Collection(array('bar')));
-
+        $builder->shouldReceive('orderBy')->once()->andReturn($builder);
         $result = $builder->first();
         $this->assertEquals('bar', $result);
     }
@@ -361,7 +361,7 @@ class EloquentBuilderTest extends TestCase {
         $this->query->shouldReceive('from')->once()->with('Model')->andReturn(array('Model'));
         $this->query->shouldReceive('take')->once()->with(1)->andReturn($this->query);
         $this->query->shouldReceive('get')->once()->with(array('*'))->andReturn($resultSet);
-
+        $this->query->shouldReceive('orderBy')->once()->andReturn($this->query);
         $resultSet->shouldReceive('valid')->once()->andReturn(false);
 
         $this->model->shouldReceive('getKeyName')->twice()->andReturn('id');
@@ -399,6 +399,7 @@ class EloquentBuilderTest extends TestCase {
         // usual query expectations
         $this->query->shouldReceive('where')->once()->with('id(n)', '=', $id)
                     ->shouldReceive('take')->once()->with(1)->andReturn($this->query)
+                    ->shouldReceive('orderBy')->once()->andReturn($this->query)
                     ->shouldReceive('get')->once()->with($properties)->andReturn($resultSet)
                     ->shouldReceive('from')->once()->with('Model')
                         ->andReturn(array('Model'));
@@ -424,6 +425,7 @@ class EloquentBuilderTest extends TestCase {
         $grammar = M::mock('Vinelab\NeoEloquent\Query\Grammars\CypherGrammar')->makePartial();
         $this->query->shouldReceive('getGrammar')->andReturn($grammar);
         // put things to the test
+
         $found = $this->builder->find($id, $properties);
 
         $this->assertInstanceOf('User', $found);

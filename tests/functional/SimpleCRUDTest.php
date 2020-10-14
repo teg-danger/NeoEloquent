@@ -225,7 +225,6 @@ class SimpleCRUDTest extends TestCase {
 
         // Let's fetch them to see if that's really true.
         $wizzez = Wiz::all();
-
         foreach ($wizzez as $key => $wizz)
         {
             $this->assertInstanceOf('Vinelab\NeoEloquent\Tests\Functional\Wiz', $wizz);
@@ -233,7 +232,7 @@ class SimpleCRUDTest extends TestCase {
             $this->assertArrayHasKey('id', $values);
             $this->assertGreaterThanOrEqual(0, $values['id']);
             unset($values['id']);
-            $this->assertEquals($batch[count($batch)-$key-1], $values);
+            $this->assertEquals($batch[$key], $values);
         }
     }
 

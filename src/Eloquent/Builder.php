@@ -834,15 +834,10 @@ class Builder extends IlluminateBuilder {
             [$column => $this->model->freshTimestampString()],
             $values
         );
-
-       /* $from = is_array($this->query->from)? $this->query->from[0]: $this->query->from;
-        $segments = preg_split('/\s+as\s+/i', $from);
-        $qualifiedColumn = mb_strtolower(end($segments)).'.'.$column;
-
-        $values[$qualifiedColumn] = $values[$column];
-
-        unset($values[$column]);*/
-
         return $values;
+    }
+    public function first($columns = ['*'])
+    {
+        return $this->take(1)->orderBy('created_at')->get($columns)->first();
     }
 }
